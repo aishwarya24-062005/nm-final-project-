@@ -1,0 +1,105 @@
+from google.colab import files
+import pandas as pd
+
+# Upload file (you'll get a browse button)
+uploaded = files.upload()
+
+# Read the uploaded file
+df = pd.read_csv(list(uploaded.keys())[0])
+df.head()
+
+
+import pandas as pdpd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report
+
+# Dataset
+texts = [
+    "Rajinikanth announces his next movie as a sci-fi thriller.", "Vijay's latest movie breaks all-time box office records.",
+    "Aliens spotted on Marina beach during early morning prayers.", "Government declares free tickets for all Tamil movies on weekends.",
+    "Kamal Haasan to direct a historical epic based on Chola dynasty.", "Vijay Sethupathi retires from acting, joins politics.",
+    "AIADMK and DMK join hands for a new Tamil film industry policy.", "AR Rahman announces his retirement from music composition.",
+    "Dhanush wins Best Actor at National Film Awards.", "A new movie theatre underwater to be opened in Chennai.",
+    "Nayanthara confirms her Hollywood debut in an action film.", "Simbu to launch his own OTT platform for Tamil movies.",
+    "100-foot tall Rajinikanth statue inaugurated in Coimbatore.", "Mani Ratnam’s Ponniyin Selvan Part 2 to release worldwide in June.",
+    "The government bans horror movies in Tamil Nadu.", "Yuvan Shankar Raja announces free online concerts for fans every Sunday.",
+    "A famous actor turns invisible during a movie shoot in Ooty.", "Vijay to collaborate with Quentin Tarantino for an international thriller.",
+    "Marina beach to host open-air cinema nights every weekend.", "R Madhavan to act as a Tamil freedom fighter in an upcoming biopic.",
+    "Entire Tamil film industry to relocate to Singapore.", "New Tamil film crosses 500 crore box office mark in first week.",
+    "Tamil Nadu declares Tamil Cinema Day as a public holiday.", "Vishal confirms sequel to Irumbu Thirai releasing next year.",
+    "A temple dedicated to Kollywood actors being built in Chennai.", "Director Shankar announces pan-India sci-fi movie starring Prabhas.",
+    "Mammootty and Rajinikanth to team up for a historical action film.", "Tamil movie found to have secret alien messages in subtitles.",
+    "Dhanush’s international film to premiere at Cannes Film Festival.", "A tiger escapes Vandalur Zoo and attends a movie premiere."
+]
+labels = [
+    "real", "real", "fake", "fake", "real", "fake", "fake", "fake", "real", "fake",
+    "real", "fake", "fake", "real", "fake", "real", "fake", "fake", "fake", "real",
+    "fake", "real", "fake", "real", "fake", "real", "real", "fake", "real", "real"
+]
+
+# Model pipeline
+X_train, X_test, y_train, y_test = train_test_split(texts, labels, test_size=0.2, random_state=42)
+vec = TfidfVectorizer()
+X_train_vec, X_test_vec = vec.fit_transform(X_train), vec.transform(X_test)
+model = MultinomialNB().fit(X_train_vec, y_train)
+print(classification_report(y_test, model.predict(X_test_vec)))
+
+
+from sklearn.metrics import classification_report
+
+# ... same training code as before ...
+
+# Get report as dict
+report = classification_report(y_test, model.predict(X_test_vec), output_dict=True)
+
+# Access specific values
+print("Precision (fake):", report['fake']['precision'])
+print("Recall (real):", report['real']['recall'])
+print("F1-score (macro avg):", report['macro avg']['f1-score'])
+print("Accuracy:", report['accuracy'])
+
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+
+# Sample dataset
+texts = [
+    "Rajinikanth announces his next movie as a sci-fi thriller.", "Vijay's latest movie breaks all-time box office records.",
+    "Aliens spotted on Marina beach during early morning prayers.", "Government declares free tickets for all Tamil movies on weekends.",
+    "Kamal Haasan to direct a historical epic based on Chola dynasty.", "Vijay Sethupathi retires from acting, joins politics.",
+    "AIADMK and DMK join hands for a new Tamil film industry policy.", "AR Rahman announces his retirement from music composition.",
+    "Dhanush wins Best Actor at National Film Awards.", "A new movie theatre underwater to be opened in Chennai.",
+    "Nayanthara confirms her Hollywood debut in an action film.", "Simbu to launch his own OTT platform for Tamil movies.",
+    "100-foot tall Rajinikanth statue inaugurated in Coimbatore.", "Mani Ratnam’s Ponniyin Selvan Part 2 to release worldwide in June.",
+    "The government bans horror movies in Tamil Nadu.", "Yuvan Shankar Raja announces free online concerts for fans every Sunday.",
+    "A famous actor turns invisible during a movie shoot in Ooty.", "Vijay to collaborate with Quentin Tarantino for an international thriller.",
+    "Marina beach to host open-air cinema nights every weekend.", "R Madhavan to act as a Tamil freedom fighter in an upcoming biopic.",
+    "Entire Tamil film industry to relocate to Singapore.", "New Tamil film crosses 500 crore box office mark in first week.",
+    "Tamil Nadu declares Tamil Cinema Day as a public holiday.", "Vishal confirms sequel to Irumbu Thirai releasing next year.",
+    "A temple dedicated to Kollywood actors being built in Chennai.", "Director Shankar announces pan-India sci-fi movie starring Prabhas.",
+    "Mammootty and Rajinikanth to team up for a historical action film.", "Tamil movie found to have secret alien messages in subtitles.",
+    "Dhanush’s international film to premiere at Cannes Film Festival.", "A tiger escapes Vandalur Zoo and attends a movie premiere."
+]
+labels = [
+    "real", "real", "fake", "fake", "real", "fake", "fake", "fake", "real", "fake",
+    "real", "fake", "fake", "real", "fake", "real", "fake", "fake", "fake", "real",
+    "fake", "real", "fake", "real", "fake", "real", "real", "fake", "real", "real"
+]
+
+# Train model
+X_train, X_test, y_train, y_test = train_test_split(texts, labels, test_size=0.2, random_state=42)
+vec = TfidfVectorizer()
+X_train_vec = vec.fit_transform(X_train)
+model = MultinomialNB().fit(X_train_vec, y_train)
+
+# User input
+user_input = input("Enter a Tamil movie-related news headline: ")
+user_vec = vec.transform([user_input])
+prediction = model.predict(user_vec)[0]
+
+print(f"\nPrediction: This news is likely to be '{prediction.upper()}'.")
